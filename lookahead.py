@@ -143,21 +143,30 @@ ind5 = [5, '05:22:00','05:26:00','05:30:00','05:35:00','05:45:00','05:49:00','05
 
 def timeDiff(time1, time2):
     FMT = '%H:%M:%S'
-    diff = datetime.strptime(time1, FMT) - datetime.strptime(time2, FMT)
-    return diff
+    return datetime.strptime(time1, FMT) - datetime.strptime(time2, FMT)
 
 def evalIndividual(individual):
     ''' Evaluate an individual in the population. Based on how close the average bus request time is to the actual bus trip time.
     Lower values are better.
     '''
-    avgBusRequestTime = ['03:30:00', '03:45:00', '04:28:00', '05:05:00', '05:222:00']
-    j = 0
+    avgBusRequestTime = ['03:30:00', '03:45:00', '04:28:00', '05:05:00', '05:22:00']
+    totalRequests = [10, 20, 45, 28, 78]
+
+    # The least and most possible time differences in a day
     timeDelta = timeDiff(individual[1], individual[1])
+    #timeInf = timeDiff('23:59:00', '00:00:00')
+    #print timeInf
+    #print timeDelta
 
-    while (j < len(avgBusRequestTime) - 1) and timeDiff(individual[1], avgBusRequestTime[j]) > timeDelta:
-        j += 1
-        print j
+    min = timedelta.max
+    for tim in avgBusRequestTime:
+        tim2 = timeDiff(individual[1], tim)
+        if tim2  >= timeDelta and  tim2 < min:
+            tMin = tim
 
-    print timeDiff(individual[1], avgBusRequestTime[j])
+    diff = timeDiff(individual[1], tMin)
+    # Fitness values scaled: the higher the value, the more fit an ind
+    fit = 30 - diff.total_seconds() / 60 
+    return fit,
 
-evalIndividual(ind1)
+print evalIndividual(ind4)
